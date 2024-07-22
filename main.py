@@ -1,13 +1,5 @@
 import time
 
-from sklearn.utils import resample
-
-from algo.random import *
-from algo.kmeans import *
-# from algo.mlp import *
-from algo.random import *
-from algo.weighted_kmeans import *
-from algo.topk import *
 from utils import *
 
 
@@ -48,10 +40,7 @@ def run(placers, results_fpath='results/results.csv'):
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     data = DataUtils('./dataset/base_stations_min.csv', './dataset/data_min.csv')
-    placers = {}
-    # placers['MIP'] = MIPServerPlacer(data.base_stations, data.distances)
-    placers['K-means'] = KMeansServerPlacer(data.base_stations, data.distances)
-    placers['Top-K'] = TopKServerPlacer(data.base_stations, data.distances)
-    placers['Random'] = RandomServerPlacer(data.base_stations, data.distances)
-    placers['weighted_k_means'] = WeightedKMeansServerPlacer(data.base_stations, data.distances)
+    
+    # TODO: complete here
+    
     run(placers)

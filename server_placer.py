@@ -53,6 +53,28 @@ class ServerPlacer(object):
                 total_delay += delay
                 base_station_num += 1
         return total_delay / base_station_num
+    
+    # def objective_latency(self):
+    #     """
+    #     Calculate total latency for the MEC network based on the placement of edge servers
+    #     """
+    #     assert self.edge_servers
+    #     total_latency = 0
+    #     for es in self.edge_servers:
+    #         min_total_distance = float('inf')
+    #         best_base_station = None
+    #         for candidate_bs in es.assigned_base_stations:
+    #             candidate_total_distance = sum(self._distance_edge_server_base_station(candidate_bs, bs) for bs in es.assigned_base_stations)
+    #             if candidate_total_distance < min_total_distance:
+    #                 min_total_distance = candidate_total_distance
+    #                 best_base_station = candidate_bs
+            
+    #         # Place the edge server on the best base station
+    #         ### es.latitude = best_base_station.latitude
+    #         ### es.longitude = best_base_station.longitude
+    #         total_latency += min_total_distance
+    
+    #     return total_latency
 
     def objective_workload(self):
         """
