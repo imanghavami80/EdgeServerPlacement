@@ -4,7 +4,7 @@ from sklearn.utils import resample
 
 from algo.random import *
 from algo.kmeans import *
-from algo.mlp import *
+# from algo.mlp import *
 from algo.random import *
 from algo.weighted_kmeans import *
 from algo.topk import *

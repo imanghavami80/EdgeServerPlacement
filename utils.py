@@ -1,12 +1,10 @@
 import random
-import csv
 import logging
 import os
 import pandas as pd
 import pickle
-from datetime import datetime
 from functools import wraps
-from math import cos, asin, sqrt
+from math import sqrt
 from typing import List
 
 from data.base_station import BaseStation
@@ -54,7 +52,7 @@ def memorize(filename):
 
 class DataUtils(object):
     def __init__(self, location_file, user_info_file):
-        self.base_stations = self.base_station_reader(location_file)
+        self.base_station_locations = self.base_station_reader(location_file)
         self.base_stations = self.user_info_reader(user_info_file)
         self.distances = self.distance_between_stations()
 
@@ -81,7 +79,9 @@ class DataUtils(object):
         :param path: csv文件路径, 文件应按照基站地址排序
         :return: List of BaseStations with user info
         """
-        self.address_to_id = {bs.address: bs.id for bs in self.base_stations}
+        assert self.base_station_locations
+
+        self.address_to_id = {bs.address: bs.id for bs in self.base_station_locations}
 
         req_data = pd.read_csv(path, header=0, index_col=0)
         req_data['start time'] = pd.to_datetime(req_data['start time'])
@@ -89,10 +89,10 @@ class DataUtils(object):
         for index, req_info in req_data.iterrows():
             service_time = (req_info['end time'] - req_info['start time']).seconds / 60
             bs_id = self.address_to_id[req_info['address']]
-            self.base_stations[bs_id].num_users += 1
-            self.base_stations[bs_id].workload += service_time
+            self.base_station_locations[bs_id].num_users += 1
+            self.base_station_locations[bs_id].workload += service_time
             logging.debug(msg=f"(User info::address={req_info['address']}, begin_time={req_info['end time']}, end_time={req_info['start time']})")
-        return self.base_stations
+        return self.base_station_locations
 
     @staticmethod
     def _shuffle(l: List):
@@ -110,9 +110,7 @@ class DataUtils(object):
         :param lng_b: 经度B
         :return: 距离(km)
         """
-        p = 0.017453292519943295  # Pi/180
-        a = 0.5 - cos((lat_b - lat_a) * p) / 2 + cos(lat_a * p) * cos(lat_b * p) * (1 - cos((lng_b - lng_a) * p)) / 2
-        return 12742 * asin(sqrt(a))  # 2*R*asin...
+        return sqrt((lat_b - lat_a) ** 2 + (lng_b - lng_a) ** 2)
 
     @memorize('cache/distances')
     def distance_between_stations(self) -> List[List[float]]:
