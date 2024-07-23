@@ -112,13 +112,13 @@ class NSGA2Utils:
         for gene in range(num_of_features):
             u, delta = self.__get_delta()
             if u < 0.5:
-                child.features[gene] += delta * (child.features[gene] - self.problem.variables_range[gene][0])
+                child.features[gene] += delta * (child.features[gene] - 0)
             else:
-                child.features[gene] += delta * (self.problem.variables_range[gene][1] - child.features[gene])
-            if child.features[gene] < self.problem.variables_range[gene][0]:
-                child.features[gene] = self.problem.variables_range[gene][0]
-            elif child.features[gene] > self.problem.variables_range[gene][1]:
-                child.features[gene] = self.problem.variables_range[gene][1]
+                child.features[gene] += delta * (99 - child.features[gene])
+            if child.features[gene] < 0:
+                child.features[gene] = 0
+            elif child.features[gene] > 99:
+                child.features[gene] = 99
 
     def __get_delta(self):
         u = random.random()
