@@ -1,6 +1,5 @@
 class BaseStation:
-    """基站
-    
+    """
     Attributes:
         id: 
         address: latitude-longitude

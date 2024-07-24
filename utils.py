@@ -1,5 +1,5 @@
+from data.base_station import BaseStation
 import random
-import logging
 import os
 import pandas as pd
 import pickle
@@ -7,23 +7,9 @@ from functools import wraps
 from math import sqrt
 from typing import List
 
-from data.base_station import BaseStation
-
 
 def memorize(filename):
-    """
-    装饰器 保存函数运行结果
-    :param filename: 缓存文件位置
     
-    Example:
-        @memorize('cache/square')
-        def square(x):
-            return x*x
-    
-    Todo:
-        判断参数是否相同时有坑
-    """
-
     def _memorize(func):
         @wraps(func)
         def memorized_function(*args, **kwargs):
@@ -34,8 +20,6 @@ def memorize(filename):
                     cached = pickle.load(f)
                     f.close()
                     if isinstance(cached, dict) and cached.get('key') == key:
-                        logging.info(
-                            msg='Found cache:{0}, {1} does not have to run'.format(filename, func.__name__))
                         return cached['value']
 
             value = func(*args, **kwargs)
@@ -58,27 +42,14 @@ class DataUtils(object):
 
     @memorize('cache/base_stations')
     def base_station_reader(self, path: str):
-        """
-        读取基站经纬度
-        
-        :param path: csv文件路径, 基站按地址排序
-        :return: List of BaseStations
-        """
         bs_data = pd.read_csv(path, header=0, index_col=0)
         base_stations = []
         for index, bs_info in bs_data.iterrows():
             base_stations.append(BaseStation(id=index, addr=bs_info['address'], lat=bs_info['latitude'], lng=bs_info['longitude']))
-            logging.debug(msg=f"(Base station:{index}:address={bs_info['address']}, latitude={bs_info['latitude']}, longitude={bs_info['longitude']})")
         return base_stations
 
     @memorize('cache/base_stations_with_user_info')
     def user_info_reader(self, path: str) -> List[BaseStation]:
-        """
-        读取用户上网信息
-        
-        :param path: csv文件路径, 文件应按照基站地址排序
-        :return: List of BaseStations with user info
-        """
         assert self.base_station_locations
 
         self.address_to_id = {bs.address: bs.id for bs in self.base_station_locations}
@@ -91,7 +62,6 @@ class DataUtils(object):
             bs_id = self.address_to_id[req_info['address']]
             self.base_station_locations[bs_id].num_users += 1
             self.base_station_locations[bs_id].workload += service_time
-            logging.debug(msg=f"(User info::address={req_info['address']}, begin_time={req_info['end time']}, end_time={req_info['start time']})")
         return self.base_station_locations
 
     @staticmethod
@@ -101,24 +71,10 @@ class DataUtils(object):
 
     @staticmethod
     def calc_distance(lat_a, lng_a, lat_b, lng_b):
-        """
-        由经纬度计算距离
-        
-        :param lat_a: 纬度A
-        :param lng_a: 经度A
-        :param lat_b: 纬度B
-        :param lng_b: 经度B
-        :return: 距离(km)
-        """
         return sqrt((lat_b - lat_a) ** 2 + (lng_b - lng_a) ** 2)
 
     @memorize('cache/distances')
     def distance_between_stations(self) -> List[List[float]]:
-        """
-        计算基站之间的距离
-        
-        :return: 距离(km)
-        """
         assert self.base_stations
         base_stations = self.base_stations
         distances = []
@@ -128,5 +84,5 @@ class DataUtils(object):
                 dist = DataUtils.calc_distance(station_a.latitude, station_a.longitude, station_b.latitude,
                                                station_b.longitude)
                 distances[i].append(dist)
-            logging.debug("Calculated distance from {0} to other base stations".format(str(station_a)))
         return distances
+    
