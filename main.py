@@ -6,7 +6,10 @@ import matplotlib.pyplot as plt
 
 data = DataUtils('./dataset/base_stations_min.csv', './dataset/data_min.csv')
 
-problem = Problem(1, [(0, 99)], 2700, 100, data.base_stations, data.distances)
+num_of_bs = 2700
+num_of_es = 100
+
+problem = Problem(num_of_bs, num_of_es, data.base_stations, data.distances)
 evo = Evolution(problem, mutation_param=20)
 func = [i.objectives for i in evo.evolve()]
 

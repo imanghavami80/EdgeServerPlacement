@@ -9,12 +9,12 @@ import numpy as np
 
 class Problem:
 
-    def __init__(self, num_of_variables, variables_range, num_of_base_stations, num_of_edge_servers, base_stations: List[BaseStation], distances: List[List[float]]):
+    def __init__(self, num_of_base_stations, num_of_edge_servers, base_stations: List[BaseStation], distances: List[List[float]]):
         self.num_of_objectives = 2
-        self.num_of_variables = num_of_variables
+        self.num_of_variables = 1
         self.num_of_base_stations = num_of_base_stations
         self.num_of_edge_servers = num_of_edge_servers
-        self.variables_range = variables_range
+        self.variables_range = [(0, 99)]
         self.base_stations = base_stations[:num_of_base_stations].copy()
         self.distances = distances
 
@@ -82,13 +82,11 @@ class Problem:
     def objective_latency(self, edge_servers: List[EdgeServer]):
         assert edge_servers
         total_delay = 0
-        base_station_num = 0
         for es in edge_servers:
             for bs in es.assigned_base_stations:
                 delay = self._distance_edge_server_base_station(es, bs)
                 total_delay += delay
-                base_station_num += 1
-        return total_delay / base_station_num
+        return total_delay
     
     def objective_workload(self, edge_servers: List[EdgeServer]):
         assert edge_servers
