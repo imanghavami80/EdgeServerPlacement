@@ -9,12 +9,12 @@ import numpy as np
 
 class Problem:
 
-    def __init__(self, num_of_base_stations, num_of_edge_servers, base_stations: List[BaseStation], distances: List[List[float]]):
+    def __init__(self, num_of_base_stations, num_of_edge_servers, variables_range, base_stations: List[BaseStation], distances: List[List[float]]):
         self.num_of_objectives = 2
         self.num_of_variables = 1
         self.num_of_base_stations = num_of_base_stations
         self.num_of_edge_servers = num_of_edge_servers
-        self.variables_range = [(0, 99)]
+        self.variables_range = variables_range
         self.base_stations = base_stations[:num_of_base_stations].copy()
         self.distances = distances
 

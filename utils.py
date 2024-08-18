@@ -1,5 +1,4 @@
 from data.base_station import BaseStation
-import random
 import os
 import pandas as pd
 import pickle
@@ -63,11 +62,6 @@ class DataUtils(object):
             self.base_station_locations[bs_id].num_users += 1
             self.base_station_locations[bs_id].workload += service_time
         return self.base_station_locations
-
-    @staticmethod
-    def _shuffle(l: List):
-        random.seed(6767)
-        random.shuffle(l)
 
     @staticmethod
     def calc_distance(lat_a, lng_a, lat_b, lng_b):

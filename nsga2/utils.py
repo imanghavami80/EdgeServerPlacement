@@ -109,16 +109,19 @@ class NSGA2Utils:
 
     def __mutate(self, child):
         num_of_features = len(child.features)
+        lb_value = 0
+        up_value = 99
         for gene in range(num_of_features):
             u, delta = self.__get_delta()
             if u < 0.5:
-                child.features[gene] += delta * (child.features[gene] - 0)
+                child.features[gene] += delta * (child.features[gene] - lb_value) # Increasing gene value
             else:
-                child.features[gene] += delta * (99 - child.features[gene])
-            if child.features[gene] < 0:
-                child.features[gene] = 0
-            elif child.features[gene] > 99:
-                child.features[gene] = 99
+                child.features[gene] += delta * (up_value - child.features[gene]) # Decreasing gene value
+            # Ensuring that the gene values remain within the range [0, #ES - 1]
+            if child.features[gene] < lb_value:
+                child.features[gene] = lb_value
+            elif child.features[gene] > up_value:
+                child.features[gene] = up_value
 
     def __get_delta(self):
         u = random.random()

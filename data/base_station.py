@@ -1,14 +1,5 @@
 class BaseStation:
-    """
-    Attributes:
-        id: 
-        address: latitude-longitude
-        latitude: 
-        longitude: 
-        num_users: 
-        workload: the total used time (min)
-    """
-
+    
     def __init__(self, id, addr, lat, lng):
         self.id = id
         self.address = addr
